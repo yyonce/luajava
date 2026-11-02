@@ -1,0 +1,6 @@
+luajava
+Copyright 2026 yyonce
+
+Java code (java/ directory): Apache License 2.0. See LICENSE.
+Native libraries (native/ directory): Proprietary closed-source. All rights reserved.
+See native/LICENSE-PROPRIETARY.
