@@ -42,7 +42,7 @@ public interface LuaObject extends LuaValue, AutoCloseable {
   /**
    * @return The return value of the call, which may have multiple values.
    */
-  Object[] call(int nret, Object... args);
+  Object[] call(int nret, Object[] args);
 
   /**
    * @return A return value.

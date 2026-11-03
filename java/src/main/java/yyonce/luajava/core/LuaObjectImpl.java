@@ -112,7 +112,7 @@ class LuaObjectImpl implements LuaObject {
   }
 
   @Override
-  public Object[] call(int nret, Object... args) {
+  public Object[] call(int nret, Object[] args) {
     return LuaHelper.call(this, nret, args);
   }
 }
