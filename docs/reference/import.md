@@ -2,7 +2,7 @@
 
 `import (class [, env])`
 
-Imports Java classes into the Lua environment.
+Imports Java classes into the Lua environment and returns `env`.
 
 `class` can be a string or a table.
 If `class` is a string, it is the name of the class to import;
