@@ -1,0 +1,20 @@
+Copyright (c) 2026 yyonce. All rights reserved.
+
+The Native Layer (the `native/` directory and its compiled binaries) is
+proprietary. It is NOT covered by the Apache License 2.0 that applies to
+the Java source code in the `java/` directory.
+
+You may download, use, and redistribute the compiled binaries as part of
+a project that includes the Java layer from the `java/` directory. You may
+not extract, modify, reverse engineer, decompile, or redistribute them
+separately, without prior written permission from the copyright holder.
+
+The Native Layer links third-party libraries. Their licenses are listed
+in `THIRD-PARTY-LICENSES` in this directory.
+
+These binaries are provided "AS IS", without warranty of any kind, express
+or implied. In no event shall the copyright holder be liable for any
+damages arising out of or in connection with the use or inability to use
+these binaries.
+
+This license terminates automatically if you breach any of its terms.
