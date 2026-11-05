@@ -144,7 +144,7 @@ public final class LuaConverter {
             luaNumber.longValue(),
             luaNumber.doubleValue(),
             tar,
-            false);
+            true);
         return nobj != null ? nobj : err;
       }
       if (obj instanceof LuaString) {
@@ -162,11 +162,7 @@ public final class LuaConverter {
       if (tp != 0) {
         Number number = (Number) obj;
         Object nobj = toNumberInternal(
-            tp == INTEGER,
-            number.longValue(),
-            number.doubleValue(),
-            tar,
-            false);
+            tp == INTEGER, number.longValue(), number.doubleValue(), tar, true);
         return nobj != null ? nobj : err;
       }
       return tar.isAssignableFrom(obj.getClass()) ? obj : err;
