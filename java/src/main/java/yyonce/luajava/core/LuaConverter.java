@@ -185,7 +185,9 @@ public final class LuaConverter {
       case LuaC.LUA_TNIL:
         return !tar.isPrimitive();
       case LuaC.LUA_TBOOLEAN:
-        return tar == Boolean.TYPE || tar.isAssignableFrom(Boolean.class);
+        return tar == Boolean.TYPE
+            || tar.isAssignableFrom(Boolean.class)
+            || tar.isAssignableFrom(LuaBoolean.class);
       case LuaC.LUA_TNUMBER:
         return tar == Byte.TYPE
             || tar == Short.TYPE
@@ -200,9 +202,11 @@ public final class LuaConverter {
             || tar.isAssignableFrom(Float.class)
             || tar.isAssignableFrom(Double.class)
             || tar == Character.TYPE
-            || tar.isAssignableFrom(Character.class);
+            || tar.isAssignableFrom(Character.class)
+            || tar.isAssignableFrom(LuaNumber.class);
       case LuaC.LUA_TSTRING:
-        return tar.isAssignableFrom(String.class);
+        return tar.isAssignableFrom(String.class)
+            || tar.isAssignableFrom(LuaString.class);
       case LuaC.LUA_TFUNCTION:
         return tar.isAssignableFrom(LuaFunction.class) || tar.isInterface();
       case LuaC.LUA_TTABLE:
@@ -238,8 +242,9 @@ public final class LuaConverter {
         }
         return null;
       case LuaC.LUA_TBOOLEAN:
-        tryCCE(tar, Boolean.class);
-        return L.toBoolean(idx);
+        if (noCCE(tar, Boolean.class)) return L.toBoolean(idx);
+        tryCCE(tar, LuaBoolean.class);
+        return LuaBoolean.valueOf(L.toBoolean(idx));
       case LuaC.LUA_TNUMBER:
         boolean iorn = L.isInteger(idx);
         Object nobj = toNumberInternal(
@@ -248,11 +253,16 @@ public final class LuaConverter {
             iorn ? 0 : L.toNumber(idx),
             tar,
             true);
+        if (nobj == null) {
+          tryCCE(tar, LuaNumber.class);
+          return LuaNumber.valueOf(L, idx);
+        }
         if (nobj == null) throw newCCE(tar, iorn ? Long.class : Double.class);
         return nobj;
       case LuaC.LUA_TSTRING:
-        tryCCE(tar, String.class);
-        return L.toString(idx);
+        if (noCCE(tar, String.class)) return L.toString(idx);
+        tryCCE(tar, LuaString.class);
+        return new LuaString(L.toLString(idx));
       case LuaC.LUA_TFUNCTION:
         if (tar == null || tar.isAssignableFrom(LuaFunction.class)) {
           return new LuaFunction<>(L, idx);
@@ -374,16 +384,22 @@ public final class LuaConverter {
   }
 
   private static void tryCCE(Class<?> tar, Class<?> clz) {
+    if (!noCCE(tar, clz)) {
+      throw newCCE(tar, clz);
+    }
+  }
+
+  private static boolean noCCE(Class<?> tar, Class<?> clz) {
     if (clz == null) throw new NullPointerException();
     if (tar == null) { // Object.class
-      return;
+      return true;
     }
     if (tar == clz
         || LuaJavaApi.toWrapper(tar)
             .isAssignableFrom(LuaJavaApi.toWrapper(clz))) {
-      return;
+      return true;
     }
-    throw newCCE(tar, clz);
+    return false;
   }
 
   private static ClassCastException newCCE(Class<?> tar, Class<?> clz) {
