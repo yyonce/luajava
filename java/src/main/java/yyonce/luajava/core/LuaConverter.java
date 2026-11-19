@@ -220,10 +220,10 @@ public final class LuaConverter {
         Class<?> clz = LuaObject.class;
         if (L.isJavaObject(idx)) {
           Object jobj = L.toJavaObject(idx);
-          if (jobj == null) return true;
-          clz = jobj instanceof Class ? (Class<?>) jobj : jobj.getClass();
+          if (jobj == null) throw new LuaError();
+          clz = jobj.getClass();
         }
-        return tar.isAssignableFrom(clz);
+        return LuaJavaApi.toWrapper(tar).isAssignableFrom(clz);
       case LuaC.LUA_TTHREAD:
         return tar.isAssignableFrom(LuaThread.class);
       default:
@@ -292,7 +292,7 @@ public final class LuaConverter {
       case LuaC.LUA_TLIGHTUSERDATA:
         if (L.isJavaObject(idx)) {
           Object jobj = L.toJavaObject(idx);
-          if (jobj == null) return jobj;
+          if (jobj == null) throw new LuaError();
           tryCCE(tar, jobj.getClass());
           return jobj;
         }
